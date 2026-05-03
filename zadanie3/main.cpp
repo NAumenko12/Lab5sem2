@@ -1,10 +1,10 @@
 #include "plain.h"
 
 int main() {
-    AirTraffic traffic;
-    string commandLine;
-    for (; getline(cin, commandLine); ) {
-        processCommand(traffic, commandLine);
+    AirTraffic traffic{};
+    for (string line{}; getline(cin, line);) {
+        string result = processCommand(traffic, line);
+        cout << result << "\n";
     }
     return 0;
 }

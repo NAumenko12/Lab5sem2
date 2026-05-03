@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <iterator>
 #include <sstream>
 
 using namespace std;
@@ -12,6 +11,7 @@ enum class Type {
     PLANES_FOR_TOWN,
     TOWNS_FOR_PLANE,
     PLANES,
+    UNKNOWN
 };
 
 struct Plane {
@@ -23,14 +23,11 @@ struct AirTraffic {
     vector<Plane> planes;
 };
 
-bool getCommandType(const string& command, Type& commandType);
-vector<string> splitCommand(const string& commandLine);
-bool hasPlane(const AirTraffic& traffic, const string& planeName);
+string createPlane(AirTraffic& traffic, const string& name, const vector<string>& towns);
+string planesForTown(const AirTraffic& traffic, const string& town);
+string townsForPlane(const AirTraffic& traffic, const string& planeName);
+string allPlanes(const AirTraffic& traffic);
+Type parseCommandType(const string& command);
+vector<string> splitLine(const string& line);
 bool hasTown(const Plane& plane, const string& town);
-bool hasDuplicateTowns(const vector<string>& towns);
-void createPlane(AirTraffic& traffic, const vector<string>& tokens);
-void printPlanesForTown(const AirTraffic& traffic, const vector<string>& tokens);
-void printOtherPlanesForTown(const AirTraffic& traffic, const string& town, const string& planeName);
-void printTownsForPlane(const AirTraffic& traffic, const vector<string>& tokens);
-void printPlanes(const AirTraffic& traffic);
-void processCommand(AirTraffic& traffic, const string& commandLine);
+string processCommand(AirTraffic& traffic, const string& line);

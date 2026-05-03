@@ -10,7 +10,11 @@ vector<Cell> createWarehouse() {
         for (int rack : racks) {
             for (int section : sections) {
                 for (int shelf : shelves) {
-                    warehouse.push_back({buildAddress(zone, rack, section, shelf), "", 0});
+                    Cell cell;
+                    cell.address = buildAddress(zone, rack, section, shelf);
+                    cell.product = "";
+                    cell.quantity = 0;
+                    warehouse.push_back(cell);
                 }
             }
         }
@@ -18,48 +22,49 @@ vector<Cell> createWarehouse() {
     return warehouse;
 }
 
-void addProduct(vector<Cell>& warehouse, const string& product, int quantity, const string& address) {
+string addProduct(vector<Cell>& warehouse, const string& product, int quantity, const string& address) {
+    string message{};
     int cellIndex = findCellIndex(warehouse, address);
     if (cellIndex == -1) {
-        cout << "Ошибка: Ячейка " << address << " не найдена\n";
+        message = "Ячейка не найдена";
     } else if (!warehouse[cellIndex].product.empty() && warehouse[cellIndex].product != product) {
-        cout << "Ошибка: Ячейка " << address << " занята товаром " << warehouse[cellIndex].product << '\n';
+        message = "Ячейка занята";
     } else if (warehouse[cellIndex].quantity + quantity > MAX_PER_CELL) {
-        cout << "Ошибка: Превышена вместимость ячейки (максимум 10)\n";
+        message = "Превышена вместимость";
     } else {
         warehouse[cellIndex].product = product;
         warehouse[cellIndex].quantity += quantity;
-        cout << "Добавлено " << quantity << " " << product << " в " << address << '\n';
+        message = "Добавлено " + to_string(quantity) + " " + product + " в " + address;
     }
+    return message;
 }
 
-void removeProduct(vector<Cell>& warehouse, const string& product, int quantity, const string& address) {
+string removeProduct(vector<Cell>& warehouse, const string& product, int quantity, const string& address) {
+    string message{};
     int cellIndex = findCellIndex(warehouse, address);
     if (cellIndex == -1) {
-        cout << "Ошибка: Ячейка " << address << " не найдена\n";
+        message = "Ячейка не найдена";
     } else if (warehouse[cellIndex].product != product || warehouse[cellIndex].quantity == 0) {
-        cout << "Ошибка: Товар " << product << " не найден в ячейке " << address << '\n';
+        message = "Товар не найден";
     } else if (warehouse[cellIndex].quantity < quantity) {
-        cout << "Ошибка: Недостаточно товаров для удаления\n";
+        message = "Недостаточно товара";
     } else {
         warehouse[cellIndex].quantity -= quantity;
-        cout << "Удалено " << quantity << " " << product << " (остаток: " << warehouse[cellIndex].quantity << ")\n";
+        message = "Удалено " + to_string(quantity) + " " + product + " (остаток: " + to_string(warehouse[cellIndex].quantity) + ")";
         if (warehouse[cellIndex].quantity == 0) {
             warehouse[cellIndex].product = "";
         }
     }
+    return message;
 }
 
-void info(const vector<Cell>& warehouse) {
+string info(const vector<Cell>& warehouse) {
+    string message{};
     vector<string> zones{"А", "Б", "В"};
     vector<int> zoneQuantities{0, 0, 0};
-    vector<string> emptyAddresses;
-    int totalQuantity {};
+    int totalQuantity{};
     for (const Cell& cell : warehouse) {
         totalQuantity += cell.quantity;
-        if (cell.quantity == 0) {
-            emptyAddresses.push_back(cell.address);
-        }
         if (isZoneAddress(cell.address, "А")) {
             zoneQuantities[0] += cell.quantity;
         } else if (isZoneAddress(cell.address, "Б")) {
@@ -68,56 +73,53 @@ void info(const vector<Cell>& warehouse) {
             zoneQuantities[2] += cell.quantity;
         }
     }
-    cout << fixed << setprecision(2);
-    cout << "Загруженность склада: "
-         << static_cast<double>(totalQuantity) * 100.0 / TOTAL_CAPACITY << " %\n";
-
-    int zoneNumber {};
+    ostringstream output;
+    output << fixed << setprecision(2);
+    output << "Загруженность склада: " << totalQuantity * 100.0 / TOTAL_CAPACITY << " %\n";
+    int zoneNumber{};
     for (const string& zone : zones) {
-        cout << "Загруженность зоны " << zone << ": "
-             << static_cast<double>(zoneQuantities[zoneNumber]) * 100.0 / ZONE_CAPACITY << " %\n";
+        output << "Загруженность зоны " << zone << ": " << zoneQuantities[zoneNumber] * 100.0 / ZONE_CAPACITY << " %\n";
         ++zoneNumber;
     }
-    cout << "Заполненные ячейки:\n";
+    output << "Заполненные ячейки:\n";
     for (const Cell& cell : warehouse) {
         if (cell.quantity > 0) {
-            cout << cell.address << ": " << cell.product << " (" << cell.quantity << ")\n";
+            output << cell.address << ": " << cell.product << " (" << cell.quantity << ")\n";
         }
     }
-    cout << "Пустые ячейки:\n";
-    int addressNumber {};
-    for (const string& address : emptyAddresses) {
-        if (addressNumber > 0) {
-            cout << ", ";
+    output << "Пустые ячейки:\n";
+    for (const Cell& cell : warehouse) {
+        if (cell.quantity == 0) {
+            output << cell.address << " ";
         }
-        cout << address;
-        ++addressNumber;
     }
-    cout << '\n';
+    message = output.str();
+    return message;
 }
 
-void processCommand(vector<Cell>& warehouse, const string& commandLine) {
+
+string processCommand(vector<Cell>& warehouse, const string& commandLine) {
+    string message{};
     istringstream input(commandLine);
     string command{};
+    string product{};
+    int quantity{};
+    string address{};
     input >> command;
     if (command == "ADD") {
-        string product{};
-        int quantity {};
-        string address{};
         input >> product >> quantity >> address;
-        addProduct(warehouse, product, quantity, address);
+        message = addProduct(warehouse, product, quantity, address);
     } else if (command == "REMOVE") {
-        string product{};
-        int quantity {};
-        string address{};
         input >> product >> quantity >> address;
-        removeProduct(warehouse, product, quantity, address);
+        message = removeProduct(warehouse, product, quantity, address);
     } else if (command == "INFO") {
-        info(warehouse);
+        message = info(warehouse);
     } else if (!command.empty()) {
-        cout << "Ошибка: Неизвестная команда\n";
+        message = "Неизвестная команда";
     }
+    return message;
 }
+
 
 string buildAddress(const string& zone, int rack, int section, int shelf) {
     string address = zone;
@@ -132,13 +134,14 @@ string buildAddress(const string& zone, int rack, int section, int shelf) {
 
 int findCellIndex(const vector<Cell>& warehouse, const string& address) {
     int index {};
+    int foundIndex {-1};
     for (const Cell& cell : warehouse) {
         if (cell.address == address) {
-            return index;
+            foundIndex = index;
         }
         ++index;
     }
-    return -1;
+    return foundIndex;
 }
 
 bool isZoneAddress(const string& address, const string& zone) {

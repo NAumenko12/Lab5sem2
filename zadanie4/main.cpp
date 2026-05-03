@@ -7,12 +7,10 @@ int main() {
     string queryCountLine{};
     getline(cin, queryCountLine);
     int queryCount = stoi(queryCountLine);
-    vector<int> queries(queryCount);
-    for (const int queryMarker : queries) {
-        static_cast<void>(queryMarker);
-        string commandLine{};
+    vector<string> commands(queryCount);
+    for (string commandLine : commands) {
         getline(cin, commandLine);
-        processCommand(schedule, commandLine);
+        cout << processCommand(schedule, commandLine) << '\n';
     }
     return 0;
 }

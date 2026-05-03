@@ -29,11 +29,11 @@ struct Port {
     vector<Container> arrival;
 };
 
-void initPort(Port& port, int maxStackWeight, int numSec);
-void arrive(Port& port, const string& id, int weight);
-void load(Port& port);
-void processComand(Port& port, const string& comandLine);
-void printSections(const Port& port);
-void putContainerIntoSection(Port& port, const Container& container, int targetSecNum);
+bool initPort(Port& port, int maxStackWeight, int numSec);
+string arrive(Port& port, const string& id, int weight);
+string load(Port& port);
+string processCommand(Port& port, const string& commandLine);
+string printSections(const Port& port);
+bool putContainerIntoSection(Port& port, const Container& container, int targetSecNum);
 int findTargetSecNum(const Port& port);
 vector<Container> loadingOrder(const Port& port);

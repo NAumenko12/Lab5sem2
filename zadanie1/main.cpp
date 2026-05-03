@@ -2,9 +2,9 @@
 
 int main() {
     vector<Cell> warehouse = createWarehouse();
-    string commandLine;
-    for (; getline(cin, commandLine); ) {
-        processCommand(warehouse, commandLine);
+    for (string commandLine{}; getline(cin, commandLine); ) {
+        string message = processCommand(warehouse, commandLine);
+        cout << message << '\n';
     }
     return 0;
 }
