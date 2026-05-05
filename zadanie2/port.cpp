@@ -18,8 +18,7 @@ string processCommand(Port& port, const string& commandFull) {
     return message;
 }
 
-bool initPort(Port& port, int maxStackWeight, int numSections) {
-    bool isReady = true;
+void initPort(Port& port, int maxStackWeight, int numSections) {
     port.maxStackWeight = maxStackWeight;
     port.sections.clear();
     port.sections.resize(numSections);
@@ -27,7 +26,6 @@ bool initPort(Port& port, int maxStackWeight, int numSections) {
         section.totalWeight = 0;
         section.containIds.clear();
     }
-    return isReady;
 }
 
 string arrive(Port& port, const string& id, int weight) {

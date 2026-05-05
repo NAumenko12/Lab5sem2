@@ -29,7 +29,7 @@ struct Port {
     vector<Container> arrival;
 };
 
-bool initPort(Port& port, int maxStackWeight, int numSec);
+void initPort(Port& port, int maxStackWeight, int numSec);
 string arrive(Port& port, const string& id, int weight);
 string load(Port& port);
 string processCommand(Port& port, const string& commandLine);

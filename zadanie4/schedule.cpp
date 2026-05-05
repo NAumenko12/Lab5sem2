@@ -1,12 +1,10 @@
 #include "schedule.h"
 
-bool initSchedule(Schedule& schedule) {
-    bool isReady = true;
+void initSchedule(Schedule& schedule) {
     schedule.currentMonthIndex = 0;
     schedule.monthLengths = {30, 28, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30};
     schedule.disciplinesByDay.clear();
     schedule.disciplinesByDay.resize(schedule.monthLengths[0]);
-    return isReady;
 }
 
 vector<string> splitCommand(const string& commandLine) {
@@ -83,13 +81,8 @@ string viewDay(const Schedule& schedule, int dayNumber) {
             message = "В день " + to_string(dayNumber) + " мы свободны!";
         } else {
             message = "В день " + to_string(dayNumber) + " занятия в университете: ";
-            bool isFirstDiscipline = true;
             for (const string& discipline : disciplines) {
-                if (!isFirstDiscipline) {
-                    message += ", ";
-                }
-                message += discipline;
-                isFirstDiscipline = false;
+                message += discipline + " ";
             }
         }
     }

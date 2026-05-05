@@ -14,7 +14,7 @@ struct Schedule {
     vector<vector<string>> disciplinesByDay;
 };
 
-bool initSchedule(Schedule& schedule);
+void initSchedule(Schedule& schedule);
 string processCommand(Schedule& schedule, const string& commandLine);
 vector<string> splitCommand(const string& commandLine);
 string viewDay(const Schedule& schedule, int dayNumber);

@@ -12,7 +12,7 @@ const int RACKS = 14;
 const int SECTIONS = 4;
 const int SHELVES = 8;
 const int MAX_PER_CELL = 10;
-const int TOTAL_CAPACITY = ZONES * RACKS * SECTIONS * SHELVES * MAX_PER_CELL;
+const int TOTAL_CAPACITY = 13440;
 const int ZONE_CAPACITY = RACKS * SECTIONS * SHELVES * MAX_PER_CELL;
 
 struct Cell {
