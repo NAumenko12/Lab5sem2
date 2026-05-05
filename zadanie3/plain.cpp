@@ -1,6 +1,5 @@
 #include "plain.h"
 
-
 bool hasTown(const Plane& plane, const string& town) {
     bool isFound = false;
     for (const string& currentTown : plane.towns) {
@@ -85,6 +84,3 @@ string allPlanes(const AirTraffic& traffic) {
     }
     return reportPlanes;
 }
-
-
-
